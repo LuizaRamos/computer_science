@@ -1,0 +1,81 @@
+# One of the simplest sorting methods is insertion sort.
+# Program the first algorithm at https://en.wikipedia.org/wiki/Insertion_sort#Algorithm.
+# Use pairwise assignment (x,y) = (y,x) to swape in the 5th line of the algorith.
+
+#Test the program at https://pythontutor.com/
+
+def insertSort(A):
+  i = 0
+  while i < len(A):
+    j = i
+    while j > 0 and A[j] < A[j-1]:
+      A[j], A[j - 1] = A[j - 1], A[j]
+      j -= 1
+    i += 1
+
+# Build on the algorithm described by Donald L Shell, that consists of:
+# 1. divide the elements into smaller subsets;
+# 2. sort the subsets using insertion sort;
+# 3. reapeat steps 1 and 2 until the list is sorted.
+
+def shellsort(A):
+  # gap is the size of the subsets
+  gap = len(A)//2
+
+  while gap > 0:               # ensure tha gap goes down to 1 and stops than.
+    i = gap                    # Attributes gap to an index
+
+    # iterates over all elements from i to the end of the array
+    # moving from left to right / middle to end
+    while i < len(A):
+      j = i - gap              # new index, spaced a gap from i
+
+      # iterates from a specific point (i) to the the beging of the array
+      # moves from right to left / middle to begining.
+      while j >= 0:
+        if A[j] < A[j + gap]:  # Stops process if the values in the next pairs
+          break                # are in the correct order
+        else:
+          # swicth the pare position as in the insertionsort
+          A[j], A[j + gap] = A[j + gap], A[j]
+        j -= gap
+      i += 1
+    gap //= 2
+
+# Using the insertion sort algorithm previous wrote
+
+def shellsort2(A):
+  size = len(A)
+  gap = size // 2
+
+  while gap > 0:               # ensure tha gap goes down to 1 and stops than.
+    i = gap                    # Attributes gap to an index
+    while i < len(A):
+      j = i - gap              # new index, spaced a gap from i
+      while j >= 0:
+        A[j:i] = insertSort(A[j:i])
+        j -= gap
+      i += 1
+    gap //= 2
+
+# Using recursion
+
+def recursive_shell_sort(A, n=None, gap=None):
+    # Initialise the length of the array and the initial gap
+    if n is None:
+        n = len(A)  
+    if gap is None:
+        gap = n // 2
+    
+    if gap > 0:
+        for i in range(gap, n):
+            temp = A[i]
+            j = i
+            # Swap earlier gap-sorted elements up until the correct location for A[i] is found
+            while j >= gap and A[j - gap] > temp:
+                A[j], A[j - gap] = A[j - gap], A[j]
+                j -= gap
+        
+        # Call the function recursively with a smaller gap
+        recursive_shell_sort(A, n, gap // 2)
+    return A
